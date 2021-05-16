@@ -3,16 +3,17 @@
 This module is developed to run apriori algorithm on RDD based pyspark.
 
 ### Data Set 
-Until feature update, data should be presented with its path as txt file. Every line should 
-include raw item sets. Please see test-data.csv as an example. 
+Until feature update, data should be presented with comma separated 
+txt file. It should be indicated in a constructor with its path. 
+Every line should include raw item sets. Please see test-data.csv as an example. 
 
 ### Creating Apriori Model
 
 To create model, please first import SparkContext and 
 Apriori class which is created in the file papriori.py.
-Minimum support value should more than 2. If min support value is set as ``auto`` `minSupport="auto""` 
+Minimum support value should be more than 2. If min support value is set as ``auto`` `minSupport="auto""` 
 algorithm will select min support value from the supports values in the first apriori table
-which includes single item's support values.
+which includes single item sets.
 
 ````buildoutcfg
 from pyspark import SparkContext  
