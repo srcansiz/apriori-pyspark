@@ -1,0 +1,35 @@
+name: Tag push test 
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Triggers on tags like v1.2.3
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Extract Version from Git
+        id: version
+        run: |
+          VERSION_TAG="${GITHUB_REF#refs/tags/}"
+          VERSION=${VERSION_TAG#v}
+          VERSION_MAJOR=$(echo $VERSION | cut -d. -f1)
+          VERSION_MINOR=$(echo $VERSION | cut -d. -f1,2)
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "VERSION_MINOR=$VERSION_MINOR" >> $GITHUB_OUTPUT
+          echo "VERSION_MAJOR=$VERSION_MAJOR" >> $GITHUB_OUTPUT
+
+      - name: Print
+        run: | 
+          echo "${{ steps.version.outputs.VERSION }}"
+          echo "${{ steps.version.outputs.VERSION_MINOR }}"
+          echo "${{ steps.version.outputs.VERSION_MAJOR }}"
+
+          
