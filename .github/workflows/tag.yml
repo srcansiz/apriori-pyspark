@@ -18,13 +18,23 @@ jobs:
       - name: Extract Version from Git
         id: version
         run: |
-          VERSION_TAG="${GITHUB_REF#refs/tags/}"
-          VERSION=${VERSION_TAG#v}
-          VERSION_MAJOR=$(echo $VERSION | cut -d. -f1)
-          VERSION_MINOR=$(echo $VERSION | cut -d. -f1,2)
-          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
-          echo "VERSION_MINOR=$VERSION_MINOR" >> $GITHUB_OUTPUT
-          echo "VERSION_MAJOR=$VERSION_MAJOR" >> $GITHUB_OUTPUT
+          VERSION_TAG="${GITHUB_REF#refs/tags/}"     # e.g. v1.2.4rc1
+          VERSION=${VERSION_TAG#v}                   # e.g. 1.2.4rc1
+
+          # Detect pre-release suffix (rc, beta, alpha, etc.)
+          if [[ "$VERSION" =~ (rc|alpha|beta) ]]; then
+            echo "Pre-release detected: $VERSION"
+            echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
+          else
+            # Standard version format
+            VERSION_MAJOR=$(echo "$VERSION" | cut -d. -f1)
+            VERSION_MINOR=$(echo "$VERSION" | cut -d. -f1,2)
+
+            echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
+            echo "VERSION_MINOR=$VERSION_MINOR" >> "$GITHUB_OUTPUT"
+            echo "VERSION_MAJOR=$VERSION_MAJOR" >> "$GITHUB_OUTPUT"
+          fi
+
 
       - name: Print
         run: | 
